@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:All4One="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/action_search"
+        android:icon="@android:drawable/ic_menu_search"
+        android:title="@string/action_search"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="always|collapseActionView" />
+
+    <item android:id="@+id/algo"
+    android:icon="@drawable/ic_menu"
+    android:title="nose"
+    All4One:showAsAction="always">
+    <menu>
+        <item android:id="@+id/action_settings"
+        android:icon="@drawable/report"
+            android:title="@string/action_settings"/>
+
+        <item android:id="@+id/action_pay"
+            android:icon="@drawable/payment_icon"
+        android:title="@string/action_pay"/>
+
+        <item android:id="@+id/action_refresh"
+            android:icon="@drawable/refreshicon"
+            android:title="@string/action_refresh"/>
+
+    </menu>
+
+</item>
+
+
+    </menu>
