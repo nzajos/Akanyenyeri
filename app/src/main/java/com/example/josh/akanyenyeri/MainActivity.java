@@ -264,6 +264,26 @@ public class MainActivity extends AppCompatActivity  {
 
 
 
+    long dateDifference(String d1,String d2)
+    {
+        long numberOfDays = 0;
+        SimpleDateFormat myFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String inputString1 = d1.split(" ")[0];
+        String inputString2 = d2.split(" ")[0];
+
+        try {
+            Date date1 = myFormat.parse(inputString1);
+            Date date2 = myFormat.parse(inputString2);
+            long diff = date2.getTime() - date1.getTime();
+
+            numberOfDays =TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+            System.out.println ("Days: " + numberOfDays);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return numberOfDays;
+    }
 
 
 
