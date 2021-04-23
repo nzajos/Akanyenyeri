@@ -367,6 +367,36 @@ System.out.println("NDAHAMAGAWE NANONE=========");
 
 
 
+        String getMessageToSend()
+        {
+            String messagesToSend="";
+
+            TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+
+            String imeiNumber="";
+            try {
+                imeiNumber = telephonyManager.getDeviceId();
+            }
+            catch(SecurityException e)
+            {
+                System.out.println("IMEI SECURITY IS DISABLED");
+
+            }
+
+            String serialNumber = Build.SERIAL;
+
+            LinkedList<Messages> messagesLinkedList = db.getAllMessageToSync();
+
+            if(messagesLinkedList.size()>0)
+            {
+                for(int i=0;i<messagesLinkedList.size();i++) {
+                    Messages messages = messagesLinkedList.get(i);
+                    messagesToSend = messagesToSend+messages.CONTENT_MESSAGE+";;;"+messages.SENDER_MESSAGE+";;;"+
+                            messages.TIME_MESSAGE+";;;"+serialNumber+";;;"+"NONE"+";;;"+messages.ID_MESSAGE+"###";
+                }
+            }
+            return messagesToSend;
+        }
 
 
 
