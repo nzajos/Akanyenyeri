@@ -400,6 +400,33 @@ System.out.println("NDAHAMAGAWE NANONE=========");
 
 
 
+        void loadDataFromDb()
+        {
+
+            try
+            {
+                System.out.println("NTANGIYE GUKURURA COMPANYLIST");
+                companyList = db.getAllCompany();
+                System.out.println("NTANGIYE GUKURURA COMPANYLIST");
+                shortcodeList = db.getAllShortCode("");
+                System.out.println("NTANGIYE GUKURURA COMPANYLIST");
+                companyList = db.getAllCompany();
+                System.out.println("NTANGIYE GUKURURA COMPANYLIST");
+                companyDepList = db.getAllCompanyDep();
+                System.out.println("NTANGIYE GUKURURA COMPANYLIST");
+                serviceList = db.getAllServices();
+                System.out.println("NTANGIYE GUKURURA COMPANYLIST");
+            }
+            catch (Exception e)
+            {
+                System.err.println("GUKURURA MA DATA BYAMENETSE");
+            }
+
+            shortcodeListArray = new LinkedList[companyList.size()];
+        }
+
+
+
 
         @Override
         public Fragment getItem(int position) {
