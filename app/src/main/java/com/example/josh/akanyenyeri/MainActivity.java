@@ -597,6 +597,72 @@ System.out.println("company-----------------------------------------------SUCCES
     }
 
 
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Background Async Task to Load all products by making HTTP Request
+     * */
+    class LoadAllCompaniesDep extends AsyncTask<String, String, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(MainActivity.this);
+            pDialog.setMessage("Loading all CompaniesDep. Please wait...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(false);
+            // pDialog.show();
+        }
+
+        protected String doInBackground(String... args) {
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            JSONObject json = jParser.makeHttpRequest(url_all_companydep, "GET", params);
+            // Check your log cat for JSON reponse
+//            Log.d("All product: ", json.toString());
+
+            try {
+                int success = 0;
+                if(json!= null)
+                    success = json.getInt(TAG_SUCCESS);
+                if (success == 1) {
+                    companydepArray = json.getJSONArray(TAG_companydep);
+
+                    //kugirango tutagira error ya contraint key
+                    if(companydepArray.length()>0)
+                        db.deleteAllFromTable(DbHandler.TABLE_COMPANY_DEP);
+
+                    for (int i = 0; i < companydepArray.length(); i++) {
+                        JSONObject c = companydepArray.getJSONObject(i);
+                        int ID_COMPANY = Integer.parseInt(c.getString(TAG_ID_COMPANY_DEP));
+                        String CODE_COMPANY = c.getString(TAG_CODE_COMPANY_DEP);
+                        String NAME_COMPANY = c.getString(TAG_NAME_COMPANY_DEP);
+                        String LOGO = c.getString(TAG_LOGO_DEP);
+                        String COUNTRY =c.getString(TAG_COUNTRY);
+                        Companydep map = new Companydep(ID_COMPANY,CODE_COMPANY,NAME_COMPANY,LOGO,COUNTRY);
+                        System.out.println("name: "+CODE_COMPANY);
+                        db.addCompanyDep(map);
+                    }
+                } else {
+                    System.out.println("companydep-----------------------------------------------SUCCESS IS 0");
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        protected void onPostExecute(String file_url) {
+            // dismiss the dialog after getting all product
+            //  pDialog.dismiss();
+            // updating UI from Background Thread
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    // updatelist(productList);
+                }
+            });
+
+        }
+    }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
