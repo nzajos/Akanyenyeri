@@ -827,5 +827,80 @@ System.out.println("company-----------------------------------------------SUCCES
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Background Async Task to Load all products by making HTTP Request
+     * */
+    class LoadAllShortCode extends AsyncTask<String, String, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(MainActivity.this);
+            pDialog.setMessage("Loading all shortcode. Please wait...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(false);
+            // pDialog.show();
+        }
+
+        protected String doInBackground(String... args) {
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+            params.add(new BasicNameValuePair("COUNTRY_NAME", FirstActivity.choosenCountry));
+            JSONObject json = jParser.makeHttpRequest(url_all_shortcode, "GET", params);
+            // Check your log cat for JSON reponse
+//            Log.d("All product: ", json.toString());
+
+            try {
+                int success = 0;
+                if(json!= null)
+                    success = json.getInt(TAG_SUCCESS);
+                if (success == 1) {
+                    shortcodeArray = json.getJSONArray(TAG_shortcode);
+                    //kugirango tutagira error ya contraint key
+                    if(shortcodeArray.length()>0)
+                        db.deleteAllFromTable(DbHandler.TABLE_SHORTCODE);
+
+                    for (int i = 0; i < shortcodeArray.length(); i++) {
+                        JSONObject c = shortcodeArray.getJSONObject(i);
+                        int ID_SHORT_CODE = Integer.parseInt(c.getString(TAG_ID_SHORTCODE));
+                        String SHORT_CODE = c.getString(TAG_SHORTCODE);
+                        String ID_COMPANY = c.getString(TAG_CODE_COMPANY);
+                        String ID_COMPANY_OWNER = c.getString(TAG_ID_COMPANY_OWNER);
+                        String EXPLANATION =c.getString(TAG_EXPLANATION);
+                        String INTERFACE = c.getString(TAG_INTERFACE);
+                        String CHARGE_AMOUNT =c.getString(TAG_CHARGE_AMOUNT);
+                        String IMAGE_PATH = c.getString(TAG_IMAGE_PATH);
+
+                        double charrgeamount = Double.parseDouble(CHARGE_AMOUNT);
+
+                        Shortcode map = new Shortcode(ID_SHORT_CODE,SHORT_CODE,EXPLANATION,ID_COMPANY_OWNER,ID_COMPANY,INTERFACE,charrgeamount,IMAGE_PATH);
+                        System.out.println("name: "+SHORT_CODE);
+                        db.addShortCode(map);
+                    }
+                } else {
+                    System.out.println("shortcode-----------------------------------------------SUCCESS IS 0");
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        protected void onPostExecute(String file_url) {
+            // dismiss the dialog after getting all product
+            //  pDialog.dismiss();
+            // updating UI from Background Thread
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    // updatelist(productList);
+                }
+            });
+
+        }
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 }
