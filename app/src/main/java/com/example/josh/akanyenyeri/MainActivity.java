@@ -899,8 +899,90 @@ System.out.println("company-----------------------------------------------SUCCES
         }
     }
 
-
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Background Async Task to Load all products by making HTTP Request
+     * */
+    class LoadAllCategories extends AsyncTask<String, String, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(MainActivity.this);
+            pDialog.setMessage("Loading all categories. Please wait...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(false);
+            // pDialog.show();
+        }
+
+        protected String doInBackground(String... args) {
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            JSONObject json = jParser.makeHttpRequest(url_all_categories, "GET", params);
+            // Check your log cat for JSON reponse
+//            Log.d("All product: ", json.toString());
+
+            try {
+                int success = 0;
+                if(json!= null)
+                    success = json.getInt(TAG_SUCCESS);
+                if (success == 1) {
+                    categorieArray = json.getJSONArray(TAG_categorie);
+
+                    //kugirango tutagira error ya contraint key
+                    if(langueArray.length()>0)
+                        db.deleteAllFromTable(DbHandler.TABLE_CATEGORIE);
+
+                    for (int i = 0; i < categorieArray.length(); i++) {
+                        JSONObject c = categorieArray.getJSONObject(i);
+                        int ID_CATEGORIE = Integer.parseInt(c.getString(TAG_ID_CATEGORIE));
+                        String NAME_CATEGORIE = c.getString(TAG_NAME_CATEGORIE);
+                        String HINT_CATEGORIE = c.getString(TAG_HINT_CATEGORIE);
+                        int DIGIT_NUMBER_CATEGORIE = c.getInt(TAG_DIGIT_NUMBER_CATEGORIE);
+                        Categorie map = new Categorie(ID_CATEGORIE,NAME_CATEGORIE,HINT_CATEGORIE,DIGIT_NUMBER_CATEGORIE);
+                        db.addCategorie(map);
+                    }
+                } else {
+                    System.out.println("langue-----------------------------------------------SUCCESS IS 0");
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        protected void onPostExecute(String file_url) {
+            // dismiss the dialog after getting all product
+            //  pDialog.dismiss();
+            // updating UI from Background Thread
+
+            runOnUiThread(new Runnable() {
+                public void run() {
+
+                    if(FirstActivity.isItTheFirstTime) {
+                        loadDataFromDb();
+                        initViewPagerAndTabs();
+                    }
+
+                    String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+                    System.out.println("CURRENT TIME STAMP IBONETSE NI:"+timeStamp);
+                    db.updateVariable("V_LAST_SYNC",timeStamp);
+
+                    // updatelist(productList);
+//                    shortcodeList = db.getAllShortCode();
+//                    companyList = db.getAllCompany();
+//                    companyDepList = db.getAllCompanyDep();
+//                    serviceList = db.getAllServices();
+//                    initViewPagerAndTabs();
+                }
+            });
+
+        }
+    }
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 }
