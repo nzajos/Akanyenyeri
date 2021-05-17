@@ -195,6 +195,19 @@ public class DbHandler extends SQLiteOpenHelper {
 
 
 
+    void addLangue(Langue langue) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("ID_LANGUE",langue.getID_LANGUE());
+        values.put("KINYARWANDA", langue.getKINYARWANDA());
+        values.put("KIRUNDI", langue.getKIRUNDI());
+        values.put("FRANCAIS", langue.getFRANCAIS());
+        values.put("ENGLISH", langue.getENGLISH());
+
+        // Inserting Row
+        db.insert(TABLE_LANGUE, null, values);
+        db.close(); // Closing database connection
+    }
 
     public LinkedList<Companydep> getAllCompanyDep() {
         LinkedList<Companydep> companydepLinkedList = new LinkedList<Companydep>();
